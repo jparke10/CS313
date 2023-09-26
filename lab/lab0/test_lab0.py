@@ -1,4 +1,4 @@
-import lab.lab0.lab0 as lab0
+import lab0 as lab0
 import unittest
 
 class T0_TestingGCD(unittest.TestCase):
