@@ -36,24 +36,28 @@ class Node(object):
             A pointer to the next node in a stack or queue
 
         """
+        assert isinstance(data, int) or isinstance(data, float) or data == None
+        assert isinstance(next_node, Node) or next_node == None
         self.__data = data
         self.__next_node = next_node
 
     def setData(self, data):
         '''Set the "data" data field to the corresponding input.'''
-        pass
+        assert isinstance(data, float) or isinstance(data, int)
+        self.__data = data
 
     def setNext(self, next_node):
         '''Set the "next_node" data field to the corresponding input.'''
-        pass
+        assert isinstance(next_node, Node)
+        self.__next_node = next_node
 
     def getData(self):
         '''Return the "data" data field.'''
-        pass
+        return self.__data
 
     def getNext(self):
         '''Return the "next_node" data field.'''
-        pass
+        return self.__next_node
 
 class Queue(object):
     """Provide class dosctring"""
@@ -63,13 +67,35 @@ class Queue(object):
 
     def __str__(self):
         '''Loop through your queue and print each Node's data.'''
-        pass
+        try:
+            if self.isEmpty():
+                raise ValueError
+        except ValueError:
+            print("Error: Attempted to print queue, but queue was empty!")
+            raise ValueError
+        else:
+            current_node = self.__head
+            queue_print = "["
+            while current_node != None:
+                queue_print += (current_node.getData() + ", ")
+            queue_print.strip()
+            queue_print += "]"
+            return queue_print
+            
 
     def enqueue(self, newData):
         '''Create a new node whose data is newData and whose next node is null
         Update head and tail.'''
         # Hint: Think about what's different for the first node added to the Queue
-        pass
+        assert isinstance(newData, Node)
+        new_node = Node(newData, None)
+        if self.isEmpty():
+            self.__head = new_node
+            self.__tail = new_node
+        else:
+            self.__tail.__next_node = new_node
+            self.__tail = new_node
+
 
     def dequeue(self):
         '''Return the head of the Queue
@@ -78,11 +104,19 @@ class Queue(object):
         #          to hold important information
         #  Hint: Return null on a empty Queue
         # Hint: Return the element(data) that is dequeued.
-        pass
+        if self.isEmpty():
+            return None
+        else:
+            dequeued = self.__head
+            self.__head = self.__head.__next_node
+            # set queue empty if removing last element from queue
+            if self.__head == None:
+                self.__tail = None
+            return dequeued
 
     def isEmpty(self):
         '''Check if the Queue is empty.'''
-        pass
+        return self.__head == None and self.__tail == None
 
 
 class Stack(object):
