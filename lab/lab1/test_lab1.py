@@ -14,7 +14,14 @@ class T0_TestingQueue(unittest.TestCase):
 
         self.assertEqual(q.__str__(), '[1, 2, 3, 4]')
         print("\n")
-
+    
+    def test_basic_dequeue(self):
+        print("\n")
+        q = lab1.Queue()
+        q.enqueue(1)
+        self.assertEqual(1, q.dequeue())
+        print("\n")
+"""
 class T1_TestingStack(unittest.TestCase):
 
     def test_is_empty_false(self):
@@ -37,6 +44,7 @@ class T2_TestingPalindrome(unittest.TestCase):
         print("The string being tested is -> ", string)
         self.assertEqual(p, False)
         print("\n")
+"""
 
 if __name__ == '__main__':
     unittest.main()
