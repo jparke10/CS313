@@ -77,8 +77,11 @@ class Queue(object):
             current_node = self.__head
             queue_print = "["
             while current_node != None:
-                queue_print += (current_node.getData() + ", ")
-            queue_print.strip()
+                queue_print += str(current_node.getData())
+                if current_node.getNext() != None:
+                    queue_print += ", "
+                current_node = current_node.getNext()
+            queue_print = queue_print.strip()
             queue_print += "]"
             return queue_print
             
@@ -87,13 +90,13 @@ class Queue(object):
         '''Create a new node whose data is newData and whose next node is null
         Update head and tail.'''
         # Hint: Think about what's different for the first node added to the Queue
-        assert isinstance(newData, Node)
-        new_node = Node(newData, None)
+        assert isinstance(newData, float) or isinstance(newData, int)
+        new_node = Node(newData)
         if self.isEmpty():
             self.__head = new_node
             self.__tail = new_node
         else:
-            self.__tail.__next_node = new_node
+            self.__tail.setNext(new_node)
             self.__tail = new_node
 
 
@@ -104,15 +107,19 @@ class Queue(object):
         #          to hold important information
         #  Hint: Return null on a empty Queue
         # Hint: Return the element(data) that is dequeued.
-        if self.isEmpty():
-            return None
+        try:
+            if self.isEmpty():
+                raise AttributeError
+        except AttributeError:
+            print("Error: Attempted a dequeue, but the queue was empty!")
+            raise AttributeError
         else:
             dequeued = self.__head
-            self.__head = self.__head.__next_node
+            self.__head = self.__head.getNext()
             # set queue empty if removing last element from queue
             if self.__head == None:
                 self.__tail = None
-            return dequeued
+            return dequeued.getData()
 
     def isEmpty(self):
         '''Check if the Queue is empty.'''
