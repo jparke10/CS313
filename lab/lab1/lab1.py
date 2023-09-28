@@ -36,14 +36,11 @@ class Node(object):
             A pointer to the next node in a stack or queue
 
         """
-        assert isinstance(data, int) or isinstance(data, float) or data == None
-        assert isinstance(next_node, Node) or next_node == None
         self.__data = data
         self.__next_node = next_node
 
     def setData(self, data):
         '''Set the "data" data field to the corresponding input.'''
-        assert isinstance(data, float) or isinstance(data, int)
         self.__data = data
 
     def setNext(self, next_node):
@@ -60,7 +57,8 @@ class Node(object):
         return self.__next_node
 
 class Queue(object):
-    """Provide class dosctring"""
+    """This class represents a linked-list queue data structure, which is
+    open at both ends and uses a first-in first-out operation order."""
     def __init__(self):
         self.__head = None
         self.__tail = None
@@ -69,28 +67,25 @@ class Queue(object):
         '''Loop through your queue and print each Node's data.'''
         try:
             if self.isEmpty():
-                raise ValueError
-        except ValueError:
+                raise AttributeError
+        except AttributeError:
             print("Error: Attempted to print queue, but queue was empty!")
-            raise ValueError
+            raise AttributeError
         else:
             current_node = self.__head
-            queue_print = "["
+            queue_print = '['
             while current_node != None:
                 queue_print += str(current_node.getData())
+                # no trailing whitespace for last element
                 if current_node.getNext() != None:
                     queue_print += ", "
                 current_node = current_node.getNext()
-            queue_print = queue_print.strip()
-            queue_print += "]"
-            return queue_print
-            
+            return queue_print + ']'
 
     def enqueue(self, newData):
         '''Create a new node whose data is newData and whose next node is null
         Update head and tail.'''
         # Hint: Think about what's different for the first node added to the Queue
-        assert isinstance(newData, float) or isinstance(newData, int)
         new_node = Node(newData)
         if self.isEmpty():
             self.__head = new_node
@@ -127,20 +122,42 @@ class Queue(object):
 
 
 class Stack(object):
-    """Provide class dosctring"""
+    """This class represents a linked-list stack data structure, which is
+    open at the top and uses a last-in first-out operation order."""
     def __init__(self):
         ''' We want to initialize our Stack to be empty.
         (ie) Set top as null'''
+        self.__top = None
 
     def __str__(self):
         '''Loop through your stack and print each Node's data.'''
-        pass
+        try:
+            if self.isEmpty():
+                raise AttributeError
+        except AttributeError:
+            print("Error: Tried to print stack, but the stack was empty!")
+            raise AttributeError
+        else:
+            current_node = self.__top
+            stack_print = '['
+            while current_node != None:
+                stack_print += str(current_node.getData())
+                # no trailing whitespace for last element
+                if current_node.getNext() != None:
+                    stack_print += ", "
+                current_node = current_node.getNext()
+            return stack_print + ']'
 
     def push(self, newData):
         '''We want to create a node whose data is newData and next node is top.
         Push this new node onto the stack
         Update top'''
-        pass
+        new_node = Node(newData)
+        if self.isEmpty():
+            self.__top = new_node
+        else:
+            new_node.setNext(self.__top)
+            self.__top = new_node
 
     def pop(self):
         ''' Return the Node that currently represents the top of the stack.
@@ -149,15 +166,25 @@ class Stack(object):
         #         to hold important information
         # Hint: Return null on a empty stack
         # Hint: Return the element(data) that is popped
-        pass
+        try:
+            if self.isEmpty():
+                raise AttributeError
+        except AttributeError:
+            print("Error: Attempted a pop, but the stack was empty!")
+            raise AttributeError
+        else:
+            popped = self.__top
+            self.__top = self.__top.getNext()
+            return popped.getData()
 
     def isEmpty(self):
         '''Check if the Stack is empty.'''
-        pass
+        return self.__top == None
 
 
 def isPalindrome(s):
     '''Use your Queue and Stack class to test wheather an input is a palindrome.'''
+    assert isinstance(s, str)
     myStack = Stack()
     myQueue = Queue()
 
@@ -168,8 +195,27 @@ def isPalindrome(s):
     # print("queue data")
     # myQueue.printQueue()
 
-    # Return appropriate value
-    return
+    # normalize string for palindrome check - strip spaces, capitals
+    normal = s.lower()
+    normal = normal.replace(' ', '')
+    length = len(normal)
+
+    # queue implementation
+    for char in normal:
+        myQueue.enqueue(char)
+    for i in range(1, ((length + 1) / 2).__ceil__()):
+        if normal[-i] != myQueue.dequeue():
+            return False
+        
+    # stack implementation
+    for char in normal:
+        myStack.push(char)
+    for i in range(((length + 1) / 2).__ceil__()):
+        if normal[i] != myStack.pop():
+            return False
+
+    # Return appropriate value, if no non-palindromes found
+    return True
 
 def isPalindromeEC(s):
     '''Implement if you wish to do the extra credit.'''
