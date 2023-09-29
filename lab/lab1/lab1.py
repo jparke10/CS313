@@ -203,6 +203,9 @@ def isPalindrome(s):
     # queue implementation
     for char in normal:
         myQueue.enqueue(char)
+    # we want to access string indices [-1] (last char) through
+    # [-(len / 2)] (middle char), loop conditions account as such
+    # ceiling op to account floats (half of odd length) as ints
     for i in range(1, ((length + 1) / 2).__ceil__()):
         if normal[-i] != myQueue.dequeue():
             return False

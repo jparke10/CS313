@@ -34,6 +34,9 @@ class T1_TestingStack(unittest.TestCase):
         s.push("4")
         print("return false if the stack is not empty")
         self.assertEqual(s.isEmpty(), False)
+        s.pop()
+        print("return true if the stack is empty")
+        self.assertEqual(s.isEmpty(), True)
         print("\n")
     
     def test_basic_push(self):
@@ -53,6 +56,7 @@ class T1_TestingStack(unittest.TestCase):
         s = lab1.Stack()
         s.push(1)
         self.assertEqual(1, s.pop())
+        # test pop of empty stack
         with self.assertRaises(Exception):
             s.pop()
         print("\n")
