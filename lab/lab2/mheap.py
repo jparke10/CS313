@@ -37,11 +37,29 @@ class max_heap(object):
         # : swap with its parent until the parent is larger or you
         # : reach the root
 
-        pass
+        try:
+            if self.length >= self.max_size:
+                raise IndexError
+        except IndexError:
+            print("Error: Tried to insert an object in the heap, but heap is full!")
+            raise IndexError
+        else:
+            self.heap.append(data)
+            self.length += 1
+            # indexing is 0-based, so length - 1
+            # swap until parent is larger or you reach the root
+            swap_index = self.length - 1
+            while (swap_index >= 0):
+                parent_index = self.__get_parent(swap_index)
+                if self.heap[swap_index] > self.heap[parent_index]:
+                    self.__swap(self.heap[swap_index], self.heap[parent_index])
+                swap_index = parent_index
+
 
     def peek(self):
         """Return the maximum value in the heap."""
-        pass
+        # by definition of max heap, max is stored at tree root
+        return self.heap[0]
 
     def extract_max(self):
         """Remove and return the maximum value in the heap.
@@ -51,8 +69,17 @@ class max_heap(object):
         # : swap first element with the last element of the list.
         # : Remove that last element from the list and return it.
         # : call __heapify to fix the heap
-
-        pass
+        try:
+            if self.length == 0:
+                raise KeyError
+        except KeyError:
+            print("Error: Tried to extract max from heap, but the heap was empty!")
+            raise KeyError
+        else:
+            self.__swap(0, self.length - 1)
+            extracted_max = self.heap.pop()
+            self.length -= 1
+            self.__heapify(0, self.length)
 
     def sort_in_place(self):
         """Perform heatsort in-place (e.g., reorder elements in ascending order for
@@ -68,7 +95,17 @@ class max_heap(object):
     def __heapify(self, curr_index, list_length = None):
         # helper function for moving elements down in the heap
         # Page 157 of CLRS book
-        pass
+        left_index = self.__get_left(curr_index)
+        right_index = self.__get_right(curr_index)
+        if left_index <= self.max_size and self.heap[left_index] >= self.heap[curr_index]:
+            largest = left_index
+        else:
+            largest = curr_index
+        if right_index <= self.max_size and self.heap[right_index] >= self.heap[largest]:
+            largest = right_index
+        if largest != curr_index:
+            self.__swap(curr_index, largest)
+            self.__heapify(largest, list_length)
 
     def build_heap(self):
         # builds max heap from the list l.
@@ -84,7 +121,7 @@ class max_heap(object):
         # left child has odd location index
         # right child has even location index
         # if loc % 2 == 0:
-            # parent = int((loc - 2) / 2)
+        #     parent = int((loc - 2) / 2)
         # else:
         parent = int((loc - 1) / 2)
         return parent
