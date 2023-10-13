@@ -7,15 +7,16 @@ class max_heap(object):
     Python list instead. When initialized, max_heap creates a new list of
     fixed size or uses an existing list.
     """
+
     def __init__(self, size = 20, data = None):
         """Initialize a binary max-heap.
 
         size: Total capacity of the heap.
-        data: List containing the desired heap contents.
-              The list is used in-place, not copied, so its contents
+        data: List containing the desired heap contents. 
+              The list is used in-place, not copied, so its contents 
               will be modified by heap operations -- using __swap method.
               If data is specified, then the size field is ignored."""
-        
+
         # Add to this constructor as needed
         if data is not None:
             self.max_size = len(data)
@@ -25,93 +26,56 @@ class max_heap(object):
             self.max_size = size
             self.length = 0
             self.heap = [None] * size
-
+        
     def get_heap(self):
         return self.heap
-    
+
+
     def insert(self, data):
         """Insert an element into the heap.
 
         Raises IndexError if the heap is full."""
         # Tips : insert 'data' at the end of the list initially
-        # : swap with its parent until the parent is larger or you
-        # : reach the root
-
-        try:
-            if self.length >= self.max_size:
-                raise IndexError
-        except IndexError:
-            print("Error: Tried to insert an object in the heap, but heap is full!")
-            raise IndexError
-        else:
-            self.heap.append(data)
-            self.length += 1
-            # indexing is 0-based, so length - 1
-            # swap until parent is larger or you reach the root
-            swap_index = self.length - 1
-            while (swap_index >= 0):
-                parent_index = self.__get_parent(swap_index)
-                if self.heap[swap_index] > self.heap[parent_index]:
-                    self.__swap(self.heap[swap_index], self.heap[parent_index])
-                swap_index = parent_index
-
-
+        #      : swap with its parent until the parent is larger or you 
+        #      : reach the root
+        
+        pass
+        
     def peek(self):
         """Return the maximum value in the heap."""
-        # by definition of max heap, max is stored at tree root
-        return self.heap[0]
+        pass
 
     def extract_max(self):
         """Remove and return the maximum value in the heap.
 
         Raises KeyError if the heap is empty."""
         # Tips: Maximum element is first element of the list
-        # : swap first element with the last element of the list.
-        # : Remove that last element from the list and return it.
-        # : call __heapify to fix the heap
-        try:
-            if self.length == 0:
-                raise KeyError
-        except KeyError:
-            print("Error: Tried to extract max from heap, but the heap was empty!")
-            raise KeyError
-        else:
-            self.__swap(0, self.length - 1)
-            extracted_max = self.heap.pop()
-            self.length -= 1
-            self.__heapify(0, self.length)
+        #     : swap first element with the last element of the list.
+        #     : Remove that last element from the list and return it.
+        #     : call __heapify to fix the heap
+        
+        pass
 
     def sort_in_place(self):
-        """Perform heatsort in-place (e.g., reorder elements in ascending order for
-        self.heap)
+        """Perform heatsort in-place (e.g., reorder elements in ascending order for self.heap)
         Note that the heap is no longer "valid" once this method is called.
-        Tip 1. Use the list_length parameter for __heapify method to limit the
-        scope of self.heap
-        Tip 2. Only use build_heap once, and then call __heapify for index where
-        max-heap property is violated
+        Tip 1. Use the list_length parameter for __heapify method to limit the scope of self.heap
+        Tip 2. Only use build_heap once, and then call __heapify for index where max-heap property is violated
         """
         pass
+
 
     def __heapify(self, curr_index, list_length = None):
         # helper function for moving elements down in the heap
         # Page 157 of CLRS book
-        left_index = self.__get_left(curr_index)
-        right_index = self.__get_right(curr_index)
-        if left_index <= self.max_size and self.heap[left_index] >= self.heap[curr_index]:
-            largest = left_index
-        else:
-            largest = curr_index
-        if right_index <= self.max_size and self.heap[right_index] >= self.heap[largest]:
-            largest = right_index
-        if largest != curr_index:
-            self.__swap(curr_index, largest)
-            self.__heapify(largest, list_length)
+        pass
 
     def build_heap(self):
         # builds max heap from the list l.
         # Tip: call __heapify() to build to the list
-        # : Page 157 of CLRS book
+        #    : Page 157 of CLRS book
         pass
+
 
     ''' Optional helper methods may be used if required '''
     ''' You may create your own helper methods as required.'''
@@ -128,19 +92,21 @@ class max_heap(object):
 
     def __get_left(self, loc):
         return 2*loc + 1
-        
+
     def __get_right(self, loc):
         return 2*loc + 2
         
+
     def __swap(self, a, b):
         # swap elements located at indexes a and b of the heap
         temp = self.heap[a]
         self.heap[a] = self.heap[b]
         self.heap[b] = temp
+    
 
-    def heap_sort(l):
-        """The public heap_sort should do the following.
-        1. Create a max_heap object using the provided list l
-        2. Call sort_in_place method to sort the list "in-place"
-        """
-        pass
+def heap_sort(l):
+    """The public heap_sort should do the following.
+    1. Create a max_heap object using the provided list l
+    2. Call sort_in_place method to sort the list "in-place"
+    """
+    pass
