@@ -89,8 +89,7 @@ class T7_heap_empty_peek(unittest.TestCase):
         print("\n")
         # test peek on empty heap
         heap = mheap.max_heap()
-        with self.assertRaises(Exception):
-            heap.peek()
+        self.assertEqual(None, heap.peek())
         print("\n")
 
 # test case 4 from assignment

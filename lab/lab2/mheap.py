@@ -6,7 +6,43 @@ class max_heap(object):
     doesn't have built-in arrays, the underlying implementation uses a
     Python list instead. When initialized, max_heap creates a new list of
     fixed size or uses an existing list.
-    """
+
+    Attributes
+    ----------
+    heap : list
+        A list of individual numbers which satisfy the max-heap property
+        That being, given a tree visualization of the list, the "root" node
+        (or first index) contains the maximum value of the list, as well as
+        having the property such that each number in the list is the maximum
+        value of itself and each of its two children.
+
+    length : int
+        Number of non-null elements in the max-heap
+
+    max_size : int
+        Total number of possible elements which can be stored in the list
+
+    Methods
+    -------
+    get_heap():
+    Returns the self.heap list, which contains every value in the heap
+    insert(data):
+    Adds a new data point to the heap, then traverses the heap bottom-up
+    from where the node was added, swapping heap data until the max-heap
+    property is satisfied again
+    peek():
+    Returns the maximum value of the heap, which in a max-heap is the root
+    extract_max():
+    Removes and returns the maximum value of the heap, traversing the entire
+    list and swapping to ensure the max-heap property is still satisfied after
+    removal
+    sort_in_place():
+    Invalidates the max-heap property by sorting the self.heap list in ascending
+    order, using the heapsort algorithm
+    build_heap():
+    Iterates over every child-possessing node in the heap, repeatedly making calls
+    to a recursive "heapify" method to construct a max-heap satisfying list from
+    the data contained in self.heap"""
 
     def __init__(self, size = 20, data = None):
         """Initialize a binary max-heap.
@@ -70,14 +106,7 @@ class max_heap(object):
         
     def peek(self):
         """Return the maximum value in the heap."""
-        try:
-            if self.length == 0:
-                raise KeyError
-        except KeyError:
-            print("Error: Tried to return max value of empty heap")
-            raise KeyError
-        else:
-            return self.heap[0]
+        return self.heap[0]
 
     def extract_max(self):
         """Remove and return the maximum value in the heap.
@@ -116,6 +145,9 @@ class max_heap(object):
 
 
     def __heapify(self, curr_index, list_length = None):
+        """Recursively moves elements down in the heap
+           to satisfy max-heap property of children being
+           smaller than the parent"""
         # helper function for moving elements down in the heap
         # Page 157 of CLRS book
         left_index = self.__get_left(curr_index)
@@ -131,6 +163,10 @@ class max_heap(object):
             self.__heapify(largest, self.length)
 
     def build_heap(self):
+        """Iterates over every child-possessing node in the heap,
+           calling recursive heapify method to conduct swaps until
+           max-heap property is satisfied for tree and all subtrees
+           in list self.heap"""
         # builds max heap from the list l.
         # Tip: call __heapify() to build to the list
         #    : Page 157 of CLRS book
