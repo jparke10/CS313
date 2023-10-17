@@ -153,15 +153,6 @@ class max_heap(object):
         self.heap[a] = self.heap[b]
         self.heap[b] = temp
 
-    """Returns the first element of NoneType in the heap
-       Allows for proper handling of heap with no data"""
-    def __hasNone(self):
-        for i in range(len(self.heap)):
-            if self.heap[i] is None:
-                return i
-        return -1
-    
-
 def heap_sort(l):
     """The public heap_sort should do the following.
     1. Create a max_heap object using the provided list l
