@@ -28,7 +28,14 @@ class max_heap(object):
             self.heap = [None] * size
         
     def get_heap(self):
-        return self.heap
+        try:
+            if self.length == 0:
+                raise KeyError
+        except KeyError:
+            print("Error: Tried to get heap, but heap was empty!")
+            raise KeyError
+        else:
+            return self.heap
 
 
     def insert(self, data):
@@ -48,6 +55,9 @@ class max_heap(object):
         else:
             # self.length (pre-increment) will refer to the last index in heap
             self.heap[self.length] = data
+            # heap should still work if null key is passed in
+            if data is None:
+                return
             self.length += 1
             curr_index = self.length - 1
             while curr_index > 0:
@@ -62,10 +72,10 @@ class max_heap(object):
         """Return the maximum value in the heap."""
         try:
             if self.length == 0:
-                raise IndexError
-        except IndexError:
+                raise KeyError
+        except KeyError:
             print("Error: Tried to return max value of empty heap")
-            raise IndexError
+            raise KeyError
         else:
             return self.heap[0]
 
