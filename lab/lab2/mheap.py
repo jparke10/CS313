@@ -46,7 +46,7 @@ class max_heap(object):
             print("Error: Tried to insert to the heap, but the heap was full!")
             raise IndexError
         else:
-            # self.length (pre-increment) will refer to the last index in list
+            # self.length (pre-increment) will refer to the last index in heap
             self.heap[self.length] = data
             self.length += 1
             curr_index = self.length - 1
