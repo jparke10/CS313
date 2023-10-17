@@ -21,6 +21,9 @@ class T1_pqueue_peek(unittest.TestCase):
         print("Just return the fist element of the queue.")
         print("\n")
         pq = pqueue.pqueue(5)
+        # test peek on empty heap
+        with self.assertRaises(Exception):
+            pq.peek()
         pq.insert(1)
         pq.insert(2)
         pq.insert(3)
@@ -50,8 +53,9 @@ class T3_heap_insert(unittest.TestCase):
     def test_heap_insert(self):
         print("\n")
         heap_data = [6,5,3,4,2,1]
-        heap = mheap.max_heap(len(heap_data), heap_data)
-        heap.max_size += 1
+        heap = mheap.max_heap(len(heap_data) + 1)
+        for data in heap_data:
+            heap.insert(data)
         heap.insert(7)
         self.assertEqual(heap.heap, [7,5,6,4,2,1,3])
         # test insert on full heap

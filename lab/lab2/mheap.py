@@ -46,8 +46,8 @@ class max_heap(object):
             print("Error: Tried to insert to the heap, but the heap was full!")
             raise IndexError
         else:
-
-            self.heap.append(data)
+            # self.length (pre-increment) will refer to the last index in list
+            self.heap[self.length] = data
             self.length += 1
             curr_index = self.length - 1
             while curr_index > 0:
@@ -60,7 +60,14 @@ class max_heap(object):
         
     def peek(self):
         """Return the maximum value in the heap."""
-        return self.heap[0]
+        try:
+            if self.length == 0:
+                raise IndexError
+        except IndexError:
+            print("Error: Tried to return max value of empty heap")
+            raise IndexError
+        else:
+            return self.heap[0]
 
     def extract_max(self):
         """Remove and return the maximum value in the heap.
@@ -78,9 +85,9 @@ class max_heap(object):
             print("Tried to extract max from heap, but the heap was empty!")
             raise KeyError
         else:
-            # -1 represents last element in the list
-            self.__swap(0, -1)
-            extracted_max = self.heap.pop()
+            self.__swap(0, self.length - 1)
+            extracted_max = self.heap.pop(self.length - 1)
+            self.heap.append(None)
             self.length -= 1
             self.__heapify(0, self.length)
             return extracted_max
@@ -145,6 +152,14 @@ class max_heap(object):
         temp = self.heap[a]
         self.heap[a] = self.heap[b]
         self.heap[b] = temp
+
+    """Returns the first element of NoneType in the heap
+       Allows for proper handling of heap with no data"""
+    def __hasNone(self):
+        for i in range(len(self.heap)):
+            if self.heap[i] is None:
+                return i
+        return -1
     
 
 def heap_sort(l):
