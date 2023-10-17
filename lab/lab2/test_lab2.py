@@ -111,6 +111,7 @@ class T7_heap_empty_peek(unittest.TestCase):
             heap.peek()
         print("\n")
 
+# test case 4 from assignment
 class T8_pqueue_insert_extract(unittest.TestCase):
     def test_pqueue_insert_extract(self):
         print("\n")
