@@ -2,28 +2,8 @@ import unittest
 import pqueue
 import mheap
 
-def isMaxHeap(l):
-    # first, check the root is the max value of the tree
-    # have to trim None values from list for max to work
-    if max([i for i in l if i is not None]) != l[0]:
-        return False
-    # iterate over all nodes with children (other than root)
-    # +1 at end so loop includes end condition (last parent node)
-    for i in range(1, int((len(l) - 1) / 2) + 1):
-        # like heapify, but without swapping or recursion
-        left_index = 2 * i + 1
-        right_index = 2 * i + 2
-        largest = i
-        if left_index < len(l) and l[left_index] is not None:
-            if l[left_index] > l[i]:
-                largest = left_index
-        if right_index < len(l) and l[right_index] is not None:
-            if l[right_index] > l[largest]:
-                largest = right_index
-        if largest != i:
-            return False
-    # if non-heap subtree is never found, it's a heap
-    return True
+"""All 'correct' heaps used in equal assertions were retrieved from
+   http://btv.melezinek.cz/binary-heap.html"""
 
 class T0_pqueue_insert(unittest.TestCase):
     def test_1_pq_insert(self):
@@ -77,7 +57,7 @@ class T3_heap_insert(unittest.TestCase):
         for data in heap_data:
             heap.insert(data)
         heap.insert(7)
-        self.assertEqual(isMaxHeap(heap.heap), True)
+        self.assertEqual(heap.get_heap(), [7,5,6,4,2,1,3])
         # test insert on full heap
         with self.assertRaises(Exception):
             heap.insert(8)
@@ -90,13 +70,15 @@ class T4_heap_build_heap(unittest.TestCase):
         heap_data = [1,2,3,4,5,6,7,8]
         heap = mheap.max_heap(len(heap_data), heap_data)
         heap.build_heap()
-        self.assertEqual(isMaxHeap(heap.heap), True)
+        self.assertEqual(heap.get_heap(), [8,5,7,4,1,6,3,2])
         print("\n")
 
 # test case 3 from assignment
 class T6_heap_extract_max(unittest.TestCase):
     def test_heap_extract_max(self):
         print("\n")
+        # test extract_max from empty heap
+        # extract_max itself tested in T2
         empty_heap = mheap.max_heap()
         with self.assertRaises(Exception):
             maximum = empty_heap.extract_max()
@@ -120,22 +102,59 @@ class T8_pqueue_insert_extract(unittest.TestCase):
         for data in queue_data:
             pq.insert(data)
         # assert valid heap after insert
-        self.assertEqual(isMaxHeap(pq.pheap.heap), True)
-        extracted = pq.extract_max()
+        self.assertEqual(pq.get_pqueue(), [8,7,6,4,3,2,5,1])
+        pq.extract_max()
         # assert heap still valid
-        self.assertEqual(isMaxHeap(pq.pheap.heap), True)
+        self.assertEqual(pq.get_pqueue(), [7,4,6,1,3,2,5,None])
         print("\n")
 
-class T9_heap_ismaxheap_invalid(unittest.TestCase):
-    def test_heap_ismaxheap_invalid(self):
+class T9_heap_get_heap(unittest.TestCase):
+    def test_heap_get_heap(self):
         print("\n")
-        # randomly generated heap from
-        # http://btv.melezinek.cz/binary-heap.html
-        heap_data = [17,14,9,11,3,4,2,10]
-        heap = mheap.max_heap(len(heap_data), heap_data)
-        # heap no longer valid after sort in place
-        heap.sort_in_place()
-        self.assertEqual(isMaxHeap(heap.heap), False)
+        empty_heap = mheap.max_heap()
+        with self.assertRaises(Exception):
+            empty_heap.get_heap()
+        print("\n")
+
+class T10_pqueue_is_empty(unittest.TestCase):
+    def test_pqueue_is_empty(self):
+        print("\n")
+        pq = pqueue.pqueue(5)
+        self.assertEqual(pq.is_empty(), True)
+        pq.insert(1)
+        self.assertEqual(pq.is_empty(), False)
+        print("\n")
+
+class T11_heap_peek_is_max(unittest.TestCase):
+    def test_heap_peek_is_max(self):
+        print("\n")
+        heap_data = [10,8,5,7,0,4,2,3,1]
+        heap = mheap.max_heap(None, heap_data)
+        self.assertEqual(max(heap_data), heap.peek())
+        print("\n")
+
+class T12_heap_insert_null(unittest.TestCase):
+    def test_heap_insert_null(self):
+        print("\n")
+        heap_data = [10,8,5,7,0,4,2,3,1]
+        heap = mheap.max_heap(None, heap_data)
+        heap.extract_max()
+        heap.insert(None)
+        self.assertEqual(heap.get_heap(), [8,7,5,3,0,4,2,1,None])
+        self.assertEqual(len([i for i in heap.get_heap() if i is not None]), heap.length)
+        print("\n")
+
+class T13_heap_test_multiple_extractmax(unittest.TestCase):
+    def test_heap_multiple_extractmax(self):
+        print("\n")
+        heap_data = [10,8,5,7,0,4,2,3,1]
+        heap = mheap.max_heap(None, heap_data)
+        max1 = heap.extract_max()
+        max2 = heap.extract_max()
+        max3 = heap.extract_max()
+        self.assertEqual(max1, 10)
+        self.assertEqual(max2, 8)
+        self.assertEqual(max3, 7)
         print("\n")
 
 
