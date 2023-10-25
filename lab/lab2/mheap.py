@@ -140,8 +140,7 @@ class max_heap(object):
         self.build_heap()
         for i in range(self.length - 1, 0, -1):
             self.__swap(0, i)
-            self.length -= 1
-            self.__heapify(0, self.length)
+            self.__heapify(0, i)
 
 
     def __heapify(self, curr_index, list_length = None):
@@ -160,7 +159,7 @@ class max_heap(object):
             largest = right_index
         if largest != curr_index:
             self.__swap(curr_index, largest)
-            self.__heapify(largest, self.length)
+            self.__heapify(largest, list_length)
 
     def build_heap(self):
         """Iterates over every child-possessing node in the heap,

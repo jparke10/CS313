@@ -156,6 +156,16 @@ class T13_heap_test_multiple_extractmax(unittest.TestCase):
         self.assertEqual(max3, 7)
         print("\n")
 
+class T14_heap_unheap_reheap(unittest.TestCase):
+    def test_heap_unheap_reheap(self):
+        print("\n")
+        to_sort_list = [10,24,3,57,4,67,37,87,7]
+        heap = mheap.max_heap(len(to_sort_list), to_sort_list)
+        heap.sort_in_place()
+        self.assertEqual(heap.get_heap(), [3, 4, 7, 10, 24, 37, 57, 67, 87])
+        heap.build_heap()
+        self.assertEqual(heap.get_heap(), [87,67,57,10,24,37,7,4,3])
+        print("\n")
 
 if __name__ == '__main__':
     unittest.main()
