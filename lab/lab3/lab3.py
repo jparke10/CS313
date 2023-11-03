@@ -219,7 +219,7 @@ class Tree(object):
                 return curr
             # if neither of those returned, and current node is parent's
             # right child, current node is rightmost node in left subtree and
-            # successor is the root node
+            # successor is an ancestor of curr
             succ = curr.parent
             while succ is not None and curr == succ.right:
                 curr = succ
