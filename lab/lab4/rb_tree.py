@@ -185,7 +185,63 @@ class rb_tree(object):
     
     def delete(self, data):
         # Same as binary tree delete, except we call rb_delete fixup at the end.
-        pass
+        z = self.find_node(data)
+        try:
+            if z is None:
+                raise KeyError
+        except KeyError:
+            print("Error: Node to delete not found in tree")
+            raise KeyError
+        else:
+            y = z
+            y_original_color = y.color
+            if z.left == self.sentinel:
+                x = z.right
+                if z.parent == self.sentinel:
+                    self.root = x
+                elif z == z.parent.left:
+                    z.parent.left = x
+                else:
+                    z.parent.right = x
+                x.parent = z.parent
+            elif z.right == self.sentinel:
+                x = z.left
+                if z.parent == self.sentinel:
+                    self.root = x
+                elif z == z.parent.left:
+                    z.parent.left = x
+                else:
+                    z.parent.right = x
+                x.parent = z.parent
+            else:
+                y = self.find_successor(z.data)
+                y_original_color = y.color
+                x = y.right
+                if y != z.right:
+                    if y.parent == self.sentinel:
+                        self.root = x
+                    elif y == y.parent.left:
+                        y.parent.left = x
+                    else:
+                        y.parent.right = x
+                    x.parent = z.parent
+                    y.right = z.right
+                    y.right.parent = y
+                else:
+                    x.parent = y
+                if z.parent == self.sentinel:
+                    self.root = y
+                elif z == z.parent.left:
+                    z.parent.left = y
+                else:
+                    z.parent.right = y
+                y.parent = z.parent
+                y.left = z.left
+                y.left.parent = y
+                y.color = z.color
+            if y_original_color == 'black':
+                self.__rb_delete_fixup(x)
+        
 
     def left_rotate(self, current_node):
         # If there is nothing to rotate with, then raise a KeyError
@@ -195,8 +251,26 @@ class rb_tree(object):
         # T1 becomes left child of x and T2 becomes right child of x
 
         # refer page 328 of CLRS book for rotations
-
-        pass
+        try:
+            y = current_node.right
+            if y is None:
+                raise KeyError
+        except KeyError:
+            print("Error: Tried to left rotate, but no child to rotate with")
+            raise KeyError
+        else:
+            current_node.right = y.left
+            if y.left != self.sentinel:
+                y.left.parent = current_node
+            y.parent = current_node.parent
+            if current_node.parent is self.sentinel:
+                self.root = y
+            elif current_node == current_node.parent.left:
+                current_node.parent.left = y
+            else:
+                current_node.parent.right = y
+            y.left = current_node
+            current_node.parent = y
     
     def right_rotate(self, current_node):
         # If there is nothing to rotate with, then raise a KeyError
@@ -207,7 +281,26 @@ class rb_tree(object):
 
         # refer page 328 of CLRS book for rotations
 
-        pass
+        try:
+            y = current_node.left
+            if y is None:
+                raise KeyError
+        except KeyError:
+            print("Error: Tried to right rotate, but no left child to rotate with")
+            raise KeyError
+        else:
+            current_node.left = y.right
+            if y.right != self.sentinel:
+                y.right.parent = current_node
+            y.parent = current_node.parent
+            if current_node.parent is self.sentinel:
+                self.root = y
+            elif current_node == current_node.parent.left:
+                current_node.parent.left = y
+            else:
+                current_node.parent.right = y
+            y.right = current_node
+            current_node.parent = y
 
     
     def __rb_insert_fixup(self, z):
@@ -215,14 +308,86 @@ class rb_tree(object):
         # the tree. Please red the code for insert() method to get a better understanding
         # refer page 330 of CLRS book and lecture slides for rb_insert_fixup
 
-        pass
+        while z.parent.color == 'red':
+            if z.parent == z.parent.parent.left:
+                y = z.parent.parent.right
+                if y.color == 'red':
+                    z.parent.color = 'black'
+                    y.color = 'black'
+                    z.parent.parent.color = 'red'
+                    z = z.parent.parent
+                else:
+                    if z == z.parent.right:
+                        z = z.parent
+                        self.left_rotate(z)
+                    z.parent.color = 'black'
+                    z.parent.parent.color = 'red'
+                    self.right_rotate(z.parent.parent)
+            else:
+                y = z.parent.parent.left
+                if y.color == 'red':
+                    z.parent.color = 'black'
+                    y.color = 'black'
+                    z.parent.parent.color = 'red'
+                    z = z.parent.parent
+                else:
+                    if z == z.parent.left:
+                        z = z.parent
+                        self.right_rotate(z)
+                    z.parent.color = 'black'
+                    z.parent.parent.color = 'red'
+                    self.left_rotate(z.parent.parent)
+        self.root.color = 'black'
 
     def __rb_delete_fixup(self, x):
         # This function maintains the balancing and coloring property after bst deletion 
         # from the tree. Please read the code for delete() method to get a better understanding.
         # refer page 338 of CLRS book and lecture slides for rb_delete_fixup
         
-        pass
+        while x != self.root and x.color == 'black':
+            if x == x.parent.left:
+                w = x.parent.right
+                if w.color == 'red':
+                    w.color = 'black'
+                    w.parent.color = 'red'
+                    self.left_rotate(x.parent)
+                    w = x.parent.right
+                if w.left.color == 'black' and w.right.color == 'black':
+                    w.color = 'red'
+                    x = x.parent
+                else:
+                    if w.right.color == 'black':
+                        w.left.color = 'black'
+                        w.color = 'red'
+                        self.right_rotate(w)
+                        w = x.parent.right
+                    w.color = x.parent.color
+                    x.parent.color = 'black'
+                    w.right.color = 'black'
+                    self.left_rotate(x.parent)
+                    x = self.root
+            else:
+                w = x.parent.left
+                if w.color == 'red':
+                    w.color = 'black'
+                    x.parent.color = 'red'
+                    self.right_rotate(x.parent)
+                    w = x.parent.left
+                if w.right.color == 'black' and w.left.color == 'black':
+                    w.color = 'red'
+                    x = x.parent
+                else:
+                    if w.left.color == 'black':
+                        w.right.color = 'black'
+                        w.color = 'red'
+                        self.left_rotate(w)
+                        w = x.parent.left
+                    w.color = x.parent.color
+                    x.parent.color = 'black'
+                    w.left.color = 'black'
+                    self.right_rotate(x.parent)
+                    x = self.root
+        x.color = 'black'
 
 
     
