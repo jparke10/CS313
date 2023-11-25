@@ -4,11 +4,51 @@ class Node(object):
         self.left = left
         self.right = right
         self.parent = parent
+        # Color can be string containing 'black' or 'red'
         self.color = color
 
 
 class rb_tree(object):
-
+    """Red-black tree
+    
+    A standard binary search tree with extra attributes and methods
+    to ensure a self-balancing property is maintained, to allow for
+    more efficient worst-case search, insert and delete operations.
+    
+    Attributes
+    ----------
+    root : Node
+        The root of the tree, initially defined as None and filled in
+        by tree operations. Worth noting that type Node has a new attribute,
+        color, which is always set to 'black' at the root node to maintain
+        red-black properties.
+        
+    sentinel : Node
+        A special type of node which serves as a pointer for 'null-leaf' nodes
+        of the tree. Serves as a placeholder for methods such as rb_insert_fixup
+        to check null leaf nodes, as NoneType would throw exceptions.
+        
+    New Methods
+    -----------
+    insert(data):
+        Similar to bst_insert(), with an appropriate call to __rb_insert_fixup(1)
+        to ensure red-black property is maintained. Newly inserted nodes are always
+        red by default.
+    delete(data):
+        Similar to standard BST delete(), with a call to __rb_delete_fixup(1) when
+        appropriate (in the event the deleted node was originally black) to ensure
+        red-black property is maintained.
+    left_rotate(current_node), right_rotate(current_node):
+        Rotations contribute to self-balancing property of red-black trees by modifying
+        pointers to nodes. Height of subtree can be increased or decreased with rotation
+        operations.
+    __rb_insert_fixup(z):
+        Restores red-black properties of the tree after a new insertion by color shifting
+        and rotating nodes where appropriate.
+    __rb_delete_fixup(x):
+        Restores red-black properties of the tree after deletion of a black node by color
+        shifting and rotating nodes where appropriate.
+    """
     PREORDER = 1
     INORDER = 2
     POSTORDER = 3
@@ -197,6 +237,7 @@ class rb_tree(object):
             y_original_color = y.color
             if z.left == self.sentinel:
                 x = z.right
+                # replace z by its right child
                 if z.parent == self.sentinel:
                     self.root = x
                 elif z == z.parent.left:
@@ -206,6 +247,7 @@ class rb_tree(object):
                 x.parent = z.parent
             elif z.right == self.sentinel:
                 x = z.left
+                # replace z by its left child
                 if z.parent == self.sentinel:
                     self.root = x
                 elif z == z.parent.left:
@@ -214,10 +256,13 @@ class rb_tree(object):
                     z.parent.right = x
                 x.parent = z.parent
             else:
+                # else, y is z's successor
                 y = self.find_successor(z.data)
                 y_original_color = y.color
                 x = y.right
+                # is y farther down the tree?
                 if y != z.right:
+                    # replace y by its right child
                     if y.parent == self.sentinel:
                         self.root = x
                     elif y == y.parent.left:
@@ -225,10 +270,13 @@ class rb_tree(object):
                     else:
                         y.parent.right = x
                     x.parent = z.parent
+                    # z's right child becomes y's right child
                     y.right = z.right
                     y.right.parent = y
+                # in case x is self.sentinel
                 else:
                     x.parent = y
+                # replace z by its successor y
                 if z.parent == self.sentinel:
                     self.root = y
                 elif z == z.parent.left:
@@ -236,9 +284,11 @@ class rb_tree(object):
                 else:
                     z.parent.right = y
                 y.parent = z.parent
+                # give z's left child to y, which had no left child
                 y.left = z.left
                 y.left.parent = y
                 y.color = z.color
+            # correct red-black violations if they occurred
             if y_original_color == 'black':
                 self.__rb_delete_fixup(x)
         
@@ -259,16 +309,25 @@ class rb_tree(object):
             print("Error: Tried to left rotate, but no child to rotate with")
             raise KeyError
         else:
+            # turn y's left subtree into current_node's right subtree
             current_node.right = y.left
+            # if y's left subtree is not empty, current_node becomes parent
+            # of subtree's root
             if y.left != self.sentinel:
                 y.left.parent = current_node
+            # current_node's parent becomes y's parent
             y.parent = current_node.parent
+            # if current_node was the root, y becomes the root
             if current_node.parent is self.sentinel:
                 self.root = y
+            # otherwise, if current_node was a left child, y becomes
+            # a left child
             elif current_node == current_node.parent.left:
                 current_node.parent.left = y
+            # otherwise, current_node was a right child, and now y is
             else:
                 current_node.parent.right = y
+            # make current_node become y's left child
             y.left = current_node
             current_node.parent = y
     
@@ -280,7 +339,7 @@ class rb_tree(object):
         # T2 becomes left child of y and T3 becomes right child of y
 
         # refer page 328 of CLRS book for rotations
-
+        # symmetrical to left_rotate
         try:
             y = current_node.left
             if y == self.sentinel:
@@ -309,21 +368,28 @@ class rb_tree(object):
         # refer page 330 of CLRS book and lecture slides for rb_insert_fixup
 
         while z.parent.color == 'red':
+            # is z's parent a left child?
             if z.parent == z.parent.parent.left:
+                # y is z's uncle (grandparent's other child)
                 y = z.parent.parent.right
+                # are z's parent and uncle both red?
                 if y.color == 'red':
+                    # case 1
                     z.parent.color = 'black'
                     y.color = 'black'
                     z.parent.parent.color = 'red'
                     z = z.parent.parent
                 else:
                     if z == z.parent.right:
+                        # case 2
                         z = z.parent
                         self.left_rotate(z)
+                    # case 3
                     z.parent.color = 'black'
                     z.parent.parent.color = 'red'
                     self.right_rotate(z.parent.parent)
             else:
+                # same as above cases, with left and right flipped
                 y = z.parent.parent.left
                 if y.color == 'red':
                     z.parent.color = 'black'
@@ -345,28 +411,35 @@ class rb_tree(object):
         # refer page 338 of CLRS book and lecture slides for rb_delete_fixup
         
         while x != self.root and x.color == 'black':
+            # is x a left child?
             if x == x.parent.left:
+                # w is x's sibling
                 w = x.parent.right
                 if w.color == 'red':
+                    # case 1
                     w.color = 'black'
                     w.parent.color = 'red'
                     self.left_rotate(x.parent)
                     w = x.parent.right
                 if w.left.color == 'black' and w.right.color == 'black':
+                    # case 2
                     w.color = 'red'
                     x = x.parent
                 else:
                     if w.right.color == 'black':
+                        # case 3
                         w.left.color = 'black'
                         w.color = 'red'
                         self.right_rotate(w)
                         w = x.parent.right
+                    # case 4
                     w.color = x.parent.color
                     x.parent.color = 'black'
                     w.right.color = 'black'
                     self.left_rotate(x.parent)
                     x = self.root
             else:
+                # same as above, with left and right swapped
                 w = x.parent.left
                 if w.color == 'red':
                     w.color = 'black'
