@@ -191,6 +191,34 @@ class T3_tree_delete(unittest.TestCase):
         self.assertEqual(tree_preorder_color, ['black', 'red', 'black', 'black', 'red', 'black', 'red'])
         print("\n")
 
+class T4_tree_left_intermediate(unittest.TestCase):
+    def test_left_rotation_intermediate(self):
+        print("\n")
+        print("Testing left rotation of intermediate node")
+        tree = rb_tree()
+        tree_elements = [7,5,9,3,6,8,10,1,2]
+        for i in tree_elements:
+            tree.bst_insert(i)
+        tree.print_tree()
+        tree.left_rotate(tree.root.right)
+        tree_preorder = [node.data for node in tree.preorder()]
+        self.assertEqual(tree_preorder, [7,5,3,1,2,6,10,9,8])
+        print("\n")
+
+class T5_tree_insert_color(unittest.TestCase):
+    def test_tree_insert_colors(self):
+        print("\n")
+        print("Testing red-black tree insert with colors")
+        tree = rb_tree()
+        tree_elements = [7,5,9,3,6,8,10,1,2]
+        for i in tree_elements:
+            tree.insert(i)
+        tree.print_with_colors()
+        tree_preorder = [node.data for node in tree.preorder()]
+        tree_preorder_color = [node.color for node in tree.preorder()]
+        self.assertEqual(tree_preorder, [7,5,2,1,3,6,9,8,10])
+        self.assertEqual(tree_preorder_color, ['black', 'red', 'black', 'red', 'red', 'black', 'black', 'red', 'red'])
+        print("\n")
 
 if __name__ == "__main__":
     unittest.main()
