@@ -220,5 +220,51 @@ class T5_tree_insert_color(unittest.TestCase):
         self.assertEqual(tree_preorder_color, ['black', 'red', 'black', 'red', 'red', 'black', 'black', 'red', 'red'])
         print("\n")
 
+class T6_tree_rotate_empty_node(unittest.TestCase):
+    def test_rotate_empty_node(self):
+        print("\n")
+        print("Testing exception on rotation of empty node")
+        tree = rb_tree()
+        tree_elements = [7,5]
+        for i in tree_elements:
+            tree.insert(i)
+        tree.print_tree()
+        print("\n")
+        with self.assertRaises(Exception):
+            tree.left_rotate(tree.root.left.left)
+        with self.assertRaises(Exception):
+            tree.right_rotate(tree.root.right)
+        print("\n")
+
+class T7_tree_delete_empty(unittest.TestCase):
+    def test_delete_empty_node(self):
+        print("\n")
+        print("Testing deletion of nonexistent node")
+        tree = rb_tree()
+        tree_elements = [7,5,9,3,6,8,10,1,2]
+        for i in tree_elements:
+            tree.insert(i)
+        tree.print_tree()
+        print("\n")
+        with self.assertRaises(Exception):
+            tree.delete(12)
+        print("\n")
+
+class T8_tree_delete_color(unittest.TestCase):
+    def test_tree_delete_color(self):
+        print("\n")
+        print("Testing proper coloring on deletion")
+        tree = rb_tree()
+        tree_elements = [7,5,9,3,6,8,10,1,2]
+        for i in tree_elements:
+            tree.insert(i)
+        tree.print_with_colors()
+        tree.delete(6)
+        tree_preorder = [node.data for node in tree.preorder()]
+        tree_preorder_color = [node.color for node in tree.preorder()]
+        self.assertEqual([7,2,1,5,3,9,8,10], tree_preorder)
+        self.assertEqual(['black','red','black','black','red','black','red','red'], tree_preorder_color)
+        print("\n")
+
 if __name__ == "__main__":
     unittest.main()
