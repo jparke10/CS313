@@ -253,7 +253,7 @@ class rb_tree(object):
         # refer page 328 of CLRS book for rotations
         try:
             y = current_node.right
-            if y is None:
+            if y == self.sentinel:
                 raise KeyError
         except KeyError:
             print("Error: Tried to left rotate, but no child to rotate with")
@@ -283,10 +283,10 @@ class rb_tree(object):
 
         try:
             y = current_node.left
-            if y is None:
+            if y == self.sentinel:
                 raise KeyError
         except KeyError:
-            print("Error: Tried to right rotate, but no left child to rotate with")
+            print("Error: Tried to right rotate, but no child to rotate with")
             raise KeyError
         else:
             current_node.left = y.right
